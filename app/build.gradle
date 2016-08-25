@@ -1,33 +1,99 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
-
     defaultConfig {
         applicationId "com.udacity.gradle.builditbigger"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        // Enabling multidex support.
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
+    productFlavors {
+        free {
+            applicationId 'com.udacity.gradle.builditbigger.free'
+        }
+        paid {
+            applicationId 'com.udacity.gradle.builditbigger.paid'
+            signingConfig signingConfigs.release
+        }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+}
+configurations.all {
+    resolutionStrategy.force 'com.google.code.findbugs:jsr305:2+'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    // Added for AdMob
     // App Moduels
     compile project(':javajokes')
     compile project(':jokeactivity')
     //Add this line to show localhost running
     //compile project (':backend')
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.google.android.gms:play-services:9.4.0'
+    // Added for AdMob
+    freeCompile 'com.google.android.gms:play-services:9.4.0'
     compile project(path: ':backend', configuration: 'android-endpoints')
+    //    androidTestCompile 'com.android.support.test:runner:0.5'
+    //    androidTestCompile 'com.android.support.test:rules:0.3'
+    //    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    //    androidTestCompile 'com.android.support:support-annotations:23.4.0'
+    //    // add this for intent mocking support
+    //    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
+    //Junit, Espresso and Hamcrest tests
+    compile 'com.android.support:support-annotations:23.4.0'
+    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test:runner:0.5') {
+        exclude group: 'com.android.support'
+    }
+    androidTestCompile('com.android.support.test:rules:0.5') {
+        exclude group: 'com.android.support'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
+        exclude group: 'com.android.support'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
+        exclude group: 'com.android.support'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-intents:2.2.2') {
+        exclude group: 'com.android.support'
+    }
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+}
+
+task appTestingTask << {
+    println "Start backend app engine"
+    dependsOn backend:appengineRun
+
+    doLast {
+        println "Stop backend app engine"
+
+    }
 }

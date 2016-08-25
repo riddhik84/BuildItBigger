@@ -19,6 +19,6 @@ public class JokeTeller {
         int min = 0;
         int max = 4;
         int i = min + (int) (Math.random() * max);
-        return jokeList[i];
+        return "Joke: " + jokeList[i];
     }
 }
