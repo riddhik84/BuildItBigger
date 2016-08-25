@@ -13,7 +13,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "Main! This is Main app");
+        //Log.d(LOG_TAG, "Main! This is Main app");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

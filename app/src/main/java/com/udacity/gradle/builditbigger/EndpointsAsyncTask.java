@@ -28,7 +28,6 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Integer
 
     ProgressBar mProgressBar;
 
-    private EndpointsAsyncTaskListener mListener = null;
     private Exception mError = null;
 
     String test = "";
@@ -46,7 +45,7 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Integer
 
     @Override
     protected void onPreExecute() {
-        Log.d(LOG_TAG, "Public AsyncClass");
+        //Log.d(LOG_TAG, "Public AsyncClass");
         if (mProgressBar != null) {
             mProgressBar.setVisibility(View.VISIBLE);
         }
@@ -54,7 +53,7 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Integer
 
     @Override
     protected String doInBackground(Pair<Context, String>... params) {
-        Log.d(LOG_TAG, "riddhik In doInBackground() method");
+        //Log.d(LOG_TAG, "riddhik In doInBackground() method");
 
         if (myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
@@ -77,7 +76,7 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Integer
         context = params[0].first; //application context
         String name = params[0].second; //input String value
 
-        //To generate progress bar
+        //To generate progress bar - This is stub code for demo
         for (int i = 0; i < 1; i++) {
             sleep();
             publishProgress(i * 50);
@@ -99,19 +98,9 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Integer
         }
     }
 
-    public EndpointsAsyncTask setListener(EndpointsAsyncTaskListener listener) {
-        this.mListener = listener;
-        return this;
-    }
-
     @Override
     protected void onPostExecute(String result) {
-        Log.d(LOG_TAG, "riddhik In onPostExecute() method");
-
-        if (this.mListener != null) {
-            //Open a new activity with the message
-            this.mListener.onComplete(result, mError);
-        }
+        //Log.d(LOG_TAG, "riddhik In onPostExecute() method");
 
 //       Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         if (mProgressBar != null) {
@@ -131,9 +120,5 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Integer
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public static interface EndpointsAsyncTaskListener {
-        public void onComplete(String result, Exception e);
     }
 }
